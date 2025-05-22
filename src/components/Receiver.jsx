@@ -31,6 +31,17 @@ const Receiver = () => {
     setIsError(false);
     try{
       const torrent = clientRef.current.add(magnetURI);
+      const timeout = setTimeout(() => {
+         if (torrent.numPeers === 0) {
+    console.warn("No peers found. This magnet link might be inactive.");
+  
+      console.warn("Timeout: Magnet link may be inactive or has no seeders.");
+      torrent.destroy();
+      setIsError(true);
+      setProcessStart(false);
+         }
+      }, 10000);
+
       torrent.on("download",()=>{
         const percent = Math.round(torrent.progress * 100);
         setProgress(percent);
