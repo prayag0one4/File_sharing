@@ -36,7 +36,7 @@ const Sender = () => {
   }
   const handleCopy = async()=>{
     await navigator.clipboard.writeText(magnetURI)
-    alert("link copy to clipboard")
+    
   }
   const handleClear = ()=>{
     setMagnetURI("");
