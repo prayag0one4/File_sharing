@@ -4,6 +4,7 @@ const Sender = () => {
   const [magnetURI, setMagnetURI] = useState("");
   const[fileName , setFilename] = useState("");
   const clientRef = useRef(null);
+  const[isUpload, setIsUpload] = useState(false);
   
   
 
@@ -17,19 +18,23 @@ const Sender = () => {
     e.preventDefault();
     const file = e.dataTransfer?.files?.[0] || e.target?.files?.[0];
     if (!file) return;
+    
 
     setMagnetURI("");
 
     clientRef.current.seed(file, (torrent) => {
       setFilename(file.name)
     console.log("Seeding:", torrent.magnetURI);
+    
 
     torrent.on("wire", (wire, addr) => {
     console.log("Peer connected:", addr || wire.remoteAddress);
     });
 
     setMagnetURI(torrent.magnetURI);
-
+    setTimeout(() => {
+    setIsUpload(false);
+    }, 500); 
 
     
     });
@@ -54,7 +59,7 @@ const Sender = () => {
       <p className="text-gray-400 ">Drag and drop file here</p>
       {// <input type="file" onChange={handleFileUpload} className="my-2 text-white mt-10 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700" />
       }
-      <input type="file" className="hidden " id="fileInput" onChange={handleFileUpload} />
+      <input type="file" className="hidden " id="fileInput" onChange={(e)=>{setIsUpload(true);handleFileUpload(e); }} />
       <div className="px-5 py-2 m-3 border-2 rounded-lg bg-black flex items-center hover:bg-gray-800 ">
       <label htmlFor="fileInput" className="text-gray-200 text-center font-bold" >Choose file</label>
       </div>
@@ -63,6 +68,11 @@ const Sender = () => {
 
       </div>
       </div>
+      {isUpload &&(
+        <div>
+          <p className="text-green-400">File is Processing... </p>
+        </div>
+      )}
       
       { magnetURI && (
         <>
