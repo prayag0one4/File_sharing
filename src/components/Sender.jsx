@@ -42,7 +42,7 @@ const Sender = () => {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="w-[100vw] flex flex-col items-center">
       <div className=" p-5 mx-10 mt-5 mb-2 border-1 bg-gray-800 flex flex-col items-center rounded-lg ">
         <h2 className="text-xl text-center text-white font-semibold">
           Send File
@@ -69,7 +69,7 @@ const Sender = () => {
                 handleFileUpload(e);
               }}
             />
-            <div className="px-5 py-2 m-3 border-2 rounded-lg bg-black flex items-center hover:bg-gray-800 ">
+            <div className="px-5 py-2 m-3 border-2 rounded-lg bg-black flex items-center hover:bg-gray-800">
               <label
                 htmlFor="fileInput"
                 className="text-gray-200 text-center font-bold"
