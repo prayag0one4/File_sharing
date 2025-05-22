@@ -1,10 +1,7 @@
-import React, { useState } from "react";
-import Sender from "./components/Sender";
-import Receiver from "./components/Receiver";
 import './index.css';
 import { Header } from "./components/Header";
 import { TabNavigation } from "./components/TabNavigation";
-import { Footer } from "./components/footer";
+import { Footer } from "./components/Footer";
 
 export default function App() {
   
