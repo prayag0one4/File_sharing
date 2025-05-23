@@ -7,6 +7,7 @@ const Receiver = () => {
   const [fileName, setFileName] = useState("");
   const [progress, setProgress] = useState(0);
   const [isError , setIsError] = useState(false);
+  const [activeTorrent,setActiveTorrent] = useState(null);
   
   const [magnetURI, setMagnetURI] = useState("");
   const[processStart , setProcessStart] = useState(false);
@@ -29,26 +30,29 @@ const Receiver = () => {
     setProgress(0);
     setProcessStart(true);
     setIsError(false);
+    const addTorrent = ()=>{
     try{
+     
       const torrent = clientRef.current.add(magnetURI);
+      setActiveTorrent(torrent);
       const timeout = setTimeout(() => {
          if (torrent.numPeers === 0) {
-    console.warn("No peers found. This magnet link might be inactive.");
+      console.warn("No peers found. This magnet link might be inactive.");
   
       console.warn("Timeout: Magnet link may be inactive or has no seeders.");
       torrent.destroy();
       setIsError(true);
       setProcessStart(false);
          }
-      }, 10000);
+      }, 20000);
 
       torrent.on("download",()=>{
-        const percent = Math.round(torrent.progress * 100);
+        const percent = parseFloat((torrent.progress * 100).toFixed(2));
         setProgress(percent);
       })
 
       torrent.on("error", (err) => {
-        console.error("Torrent error:", err.message || err);
+        console.error("Torrent error:",err);
         setIsError(true);
         setProcessStart(false);
       });
@@ -74,6 +78,15 @@ const Receiver = () => {
     setIsError(true);
     setProcessStart(false);
     }
+    }
+    if (activeTorrent) {
+    clientRef.current.remove(activeTorrent, () => {
+      console.log("Old torrent removed.");
+      addTorrent();
+    });
+  } else {
+    addTorrent();
+  }
 };
 
   return (
@@ -85,7 +98,7 @@ const Receiver = () => {
         type="text"
         placeholder="Paste magnet URI here"
         value={magnetURI}
-        onChange={(e) => setMagnetURI(e.target.value)}
+        onChange={(e) =>{setMagnetURI(e.target.value)} }
         className=" w-[60vw] lg:w-[30vw] mt-4 text-white p-4 border border-gray-300 rounded mb-2"
       />
       <button
@@ -108,7 +121,7 @@ const Receiver = () => {
       </div>
       { isError && (
           <div> 
-          <p className="text-red-600">invalid or expired link / unexpected error</p>
+          <p className="text-red-600">invalid or expired link / unexpected error try again</p>
           </div>
         )}
       {/* Progress bar */}

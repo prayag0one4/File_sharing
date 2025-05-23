@@ -5,7 +5,10 @@ const Sender = () => {
   const [fileName, setFilename] = useState("");
   const clientRef = useRef(null);
   const [isUpload, setIsUpload] = useState(false);
-  
+  const [storageWarning , setStorageWarning] = useState("");
+  const [activeTorrent , setActiveTorrent] = useState(null);
+  const fileInputRef = useRef(null);
+
 
   useEffect(() => {
     if (!clientRef.current) {
@@ -13,14 +16,42 @@ const Sender = () => {
     }
   }, []);
 
-  const handleFileUpload = (e) => {
+  const checkStorage = async (file)=>{
+    if('storage' in navigator && 'estimate' in navigator.storage){
+      const {quota, usage} = await navigator.storage.estimate();
+      const available = quota - usage;
+
+      if(file.size > available * 0.9){
+        setStorageWarning("Warning: File size is close to or exceeds available storage.")
+        return false;
+      }
+      else{
+        setStorageWarning(""); 
+        return true;
+      }
+    }
+
+  }
+
+  const handleFileUpload = async (e) => {
     e.preventDefault();
     const file = e.dataTransfer?.files?.[0] || e.target?.files?.[0];
-    if (!file) return;
+    if (!file){
+      setIsUpload(false)
+      return;
+    } 
+    
+    const canSeed = await checkStorage(file);
+      if(!canSeed){
+        setIsUpload(false);
+        return;
+      } 
+    
 
     setMagnetURI("");
 
     clientRef.current.seed(file, (torrent) => {
+      setActiveTorrent(torrent);
       setFilename(file.name);
       console.log("Seeding:", torrent.magnetURI);
 
@@ -38,7 +69,23 @@ const Sender = () => {
     await navigator.clipboard.writeText(magnetURI);
   };
   const handleClear = () => {
-    setMagnetURI("");
+    try{
+    if(activeTorrent && clientRef.current){
+        clientRef.current.remove(activeTorrent , ()=>{
+          console.log("torrent remove from client")
+        })
+      }}catch(err){
+          console.error("error removing torrent" , err)
+      
+      }
+     setActiveTorrent(null);
+  setMagnetURI("");
+  setFilename("");
+  setIsUpload(false);
+  setStorageWarning("");
+   if (fileInputRef.current) {
+    fileInputRef.current.value = null;
+  }
   };
 
   return (
@@ -62,6 +109,7 @@ const Sender = () => {
             <input
               type="file"
               className="hidden "
+              ref={fileInputRef}
               id="fileInput"
               aria-label="File Upload"
               onChange={(e) => {
@@ -83,6 +131,10 @@ const Sender = () => {
           </div>
         </div>
       </div>
+
+      { !isUpload && storageWarning && (
+        <p className="text-red-500 font-semibold mt-4">{storageWarning}</p>
+      )}
       
       {isUpload && (
         <div>
@@ -90,7 +142,7 @@ const Sender = () => {
         </div>
       )}
 
-      {magnetURI && (
+      {!isUpload && magnetURI && (
         <>
           <p className="mt-2 text-white font-semibold">
             Share this magnet link:
