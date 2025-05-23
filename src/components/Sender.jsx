@@ -42,8 +42,8 @@ const Sender = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center overflow-hidden">
-      <div className=" p-5 mx-10 mt-5 mb-2 border-1 bg-gray-800 flex flex-col items-center rounded-lg ">
+    <div className="w-full max-w-screen-sm mx-auto flex flex-col items-center px-4">
+      <div className="max-w-[80vw] p-5 mx-10 mt-5 mb-2 border-1 bg-gray-800 flex flex-col items-center rounded-lg ">
         <h2 className="text-xl text-center text-white font-semibold">
           Send File
         </h2>
@@ -52,7 +52,7 @@ const Sender = () => {
             e.preventDefault();
           }}
           onDrop={handleFileUpload}
-          className="flex flex-col py-4 px-20 m-5 border-2 border-dashed border-gray-400 rounded-lg items-center hover:border-gray-200"
+          className="max-w-[70vw] flex flex-col py-4 px-20 m-5 border-2 border-dashed border-gray-400 rounded-lg items-center hover:border-gray-200"
         >
           <div className="flex flex-col items-center my-5">
             <p className="text-gray-400 ">Drag and drop file here</p>
@@ -98,7 +98,7 @@ const Sender = () => {
           <textarea
             readOnly
             value={magnetURI}
-            className="w-[80vw] text-white mx-10 mt-6 px-10 p-2 border border-gray-300 rounded"
+            className="w-full max-w-[80vw] text-white mt-6 px-4 py-2 border border-gray-300 rounded break-words"
             rows={3}
           ></textarea>
 
