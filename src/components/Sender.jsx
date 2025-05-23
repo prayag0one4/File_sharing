@@ -42,7 +42,7 @@ const Sender = () => {
   };
 
   return (
-    <div className="w-[100vw] flex flex-col items-center">
+    <div className="w-full flex flex-col items-center overflow-hidden">
       <div className=" p-5 mx-10 mt-5 mb-2 border-1 bg-gray-800 flex flex-col items-center rounded-lg ">
         <h2 className="text-xl text-center text-white font-semibold">
           Send File

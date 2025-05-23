@@ -4,15 +4,16 @@ import { TabNavigation } from "./components/TabNavigation";
 import { Footer } from "./components/Footer";
 
 export default function App() {
-  
-
-
   return (
-    <div className="w-full min-h-screen bg-gray-900  pb-20">
-    <Header></Header>
-    <TabNavigation ></TabNavigation>
-    <Footer></Footer>
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <Header />
       
+      <main className="flex-1 flex flex-col">
+        <TabNavigation />
+      </main>
+
+      <Footer />
     </div>
   );
 }
+

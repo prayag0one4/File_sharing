@@ -6,7 +6,7 @@ export const TabNavigation =()=>{
     const [activeTab, setActivetab] = useState("send");
 
     return(
-        <div className="flex flex-col items-center justify-center my-6">
+        <div className="flex flex-col items-center justify-center my-6 w-full flex-1">
             <div className=" rounded-lg flex gap-4 border-1 p-1 border-gray-500" role="group">
                 <button type ="button" onClick={()=>setActivetab('send')} 
                 className={`px-8 py-3 text-sm font-medium rounded-lg ${
